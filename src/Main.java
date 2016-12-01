@@ -35,6 +35,16 @@ public class Main {
             }   
         }
         
-        VueSudoku.main(args , s);
+        System.out.println("autre grille");
+        for (Case[] jeu2 : sudoku.jeu2) //ligne
+        {
+            for (int j = 0; j<sudoku.jeu2.length; j++) //colonne
+            {
+                System.out.print(jeu2[j].getValeur() + " ");
+                if(j==(sudoku.jeu2.length-1)) System.out.print("\n");
+            }   
+        }
+        VueSudoku.initVal(s);
+        VueSudoku.main(args);
     }
 }

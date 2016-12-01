@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Observable;
@@ -14,7 +13,8 @@ import java.util.Observable;
  */
 public class Jeu extends Observable{
     
-    public Groupe[][] jeu;    
+    public Groupe[][] jeu;
+    public Case[][] jeu2;
     
     double lastValue;
     boolean err = false;
@@ -29,6 +29,16 @@ public class Jeu extends Observable{
             for(int j =0; j<9;j++)
             {
                 jeu[i][j] = new Groupe();
+            }
+        }
+        
+        jeu2 = new Case[9][9];
+        for(int a =0; a< 9; a++)
+        {
+            for(int b =0; b<9;b++)
+            {
+                jeu2[a][b] = new Case(0);
+
             }
         }
     }
@@ -95,7 +105,7 @@ public class Jeu extends Observable{
         jeu = g ;
     }
     
-    public void maj(int row, int column) {
+    public void maj(int row, int column, String numero) {
         // modifier le fichier .txt en remplaçant le 0 par le nombre rentré par l'utilisateur
         
         

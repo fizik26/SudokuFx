@@ -8,7 +8,6 @@ import java.util.Observable;
 import java.util.Observer;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -55,7 +54,8 @@ public class VueSudoku extends Application implements Observer{
         int column = 0;
         
         // nom de ligne, utile pour la disposition dans la grille
-        int row = 0;
+        int row;
+        row = 0;
                 
         affichage = new Text("");
         affichage.setFont(Font.font ("Verdana", 20));
@@ -89,13 +89,11 @@ public class VueSudoku extends Application implements Observer{
 
             final int c = column;
             final int r = row;
-            t.setOnKeyPressed (new EventHandler<KeyEvent>(){
-                public void handle(KeyEvent ke){
-                    System.out.print(ke.getText());
-                    
-                    // renvoie à la mise à jour du modèle le numéro de la ligne et le numéro de la colonne
-                    m.maj(r, c);
-                }
+            t.setOnKeyPressed ((KeyEvent ke) -> {
+                System.out.print(ke.getText());
+                
+                // renvoie à la mise à jour du modèle le numéro de la ligne et le numéro de la colonne
+                m.maj(r, c, ke.getText());
             });
         }
         
@@ -112,9 +110,13 @@ public class VueSudoku extends Application implements Observer{
         primaryStage.show();
     }
     
-    public static void main(String[] args , String[] sud) {
-        VueSudoku.nombresSudoku = sud;
+    public static void main(String[] args) {
         launch(args);
+    }
+    
+    public static void initVal(String[] sud)
+    {
+        VueSudoku.nombresSudoku = sud;
     }
 
     @Override
