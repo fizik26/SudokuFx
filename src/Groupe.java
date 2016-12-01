@@ -11,6 +11,13 @@
 public class Groupe {
     Case tab[] = new Case[9];
     
+    public Groupe()
+    {
+        for (int i = 0; i<9; i++)
+        {
+            tab[i]=new Case(0);
+        }
+    }
     
     public void ajouter(Case c)
     {
@@ -34,5 +41,31 @@ public class Groupe {
             }
         }
         return false;
+    }
+    
+    //accesseur : retourne la case de coordonée i
+    public Case getCase(int i)
+    {
+        return tab[i];
+    }
+
+
+    //setter
+    public void setCase(int i, Case c)
+    {
+        tab[i].setValeur(c.getValeur());
+        
+    }
+    
+    //retourne la valeur de la case i, j
+    public int getCaseValeur(int i)
+    {
+        return tab[i].getValeur();
+    }
+    
+    //setter : met la valeur c à la case de coord i
+    public void setCaseValeur(int i, int c)
+    {
+        tab[i].setValeur(c);
     }
 }

@@ -13,6 +13,11 @@ public class Case {
     Groupe tab[];
     boolean conflit;
     
+    public Case(int _valeur)
+    {
+        this.valeur = _valeur;
+    }
+    
     public Case()
     {
         conflit = false;
@@ -52,5 +57,17 @@ public class Case {
         while (this.tab[i] != null)
             i++;
         this.tab[i] = groupe;
-}
+    }
+    
+    //accesseur : retourne la valeur de la case
+    public int getValeur()
+    {
+        return valeur;
+    }
+    
+    //setter : met la case à la valeur n
+    public void setValeur(int n)
+    {
+        valeur = n;
+    }
 }
