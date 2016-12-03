@@ -4,8 +4,12 @@
  * and open the template in the editor.
  */
 // importations pour l'affichage
+import java.io.File;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -66,6 +70,7 @@ public class VueSudoku extends Application implements Observer{
         for (int i=0 ; i<81 ; i++) {        
             // texte qui sera ajouté dans le sudoku
             final TextField t = new TextField();
+            //final Text t = new Text();
             
             // si il y a un 0 , on affiche une case vide
             if(nombresSudoku[i].equals("0"))
@@ -89,11 +94,27 @@ public class VueSudoku extends Application implements Observer{
 
             final int c = column;
             final int r = row;
-            t.setOnKeyPressed ((KeyEvent ke) -> {
-                System.out.print(ke.getText());
+            t.setOnKeyTyped ((KeyEvent ke) -> {
+                // affichage de la touche sélectionnée
+                //System.out.print(" iiiiiii " +ke.getCharacter());
                 
-                // renvoie à la mise à jour du modèle le numéro de la ligne et le numéro de la colonne
-                m.maj(r, c, ke.getText());
+                // test si le charactere entré est un int compris entre 1 et 9
+                //int valInt = Integer.parseInt(ke.getCharacter());
+                String valChar = ke.getCharacter();
+                System.out.println(" rrrr   "+valChar);
+                if("1".equals(valChar) || "2".equals(valChar) || "3".equals(valChar) || "4".equals(valChar) || "5".equals(valChar) || "6".equals(valChar) || "7".equals(valChar) || "8".equals(valChar) || "9".equals(valChar))
+                {
+                System.out.print(" iiiiiii " +ke.getCharacter());
+                    try {
+                        // renvoie à la mise à jour du modèle le numéro de la ligne et le numéro de la colonne
+                        File file = new File("test.txt");
+                        // on place le contenu du fichier texte dans contenuFichier
+                        String contenuFichier = m.loadFile(file);
+                        m.maj(r, c, ke.getCharacter().charAt(0) , contenuFichier);
+                    } catch (IOException ex) {
+                        Logger.getLogger(VueSudoku.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             });
         }
         
@@ -103,7 +124,7 @@ public class VueSudoku extends Application implements Observer{
         
         border.setCenter(gPane);
  
-        Scene scene = new Scene(border);
+        Scene scene = new Scene(border , Color.WHITE);
 
         primaryStage.setTitle("Sudoku");
         primaryStage.setScene(scene);

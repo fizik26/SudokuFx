@@ -3,9 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Observable;
 /**
  *
@@ -15,7 +21,6 @@ public class Jeu extends Observable{
     
     public Groupe[][] jeu;
     public Case[][] jeu2;
-    
     double lastValue;
     boolean err = false;
 
@@ -50,6 +55,7 @@ public class Jeu extends Observable{
        // Groupe carre[][] = new Groupe[3][3]; //9 regions
         
         BufferedReader br = new BufferedReader(new FileReader("test.txt"));
+
         String ligne;
         int j=0;
         while(j<9) 
@@ -105,9 +111,40 @@ public class Jeu extends Observable{
         jeu = g ;
     }
     
-    public void maj(int row, int column, String numero) {
+    public void maj(int row, int column, char numero, String contenuFichier) throws IOException {
         // modifier le fichier .txt en remplaçant le 0 par le nombre rentré par l'utilisateur
+        //System.out.println(contenuFichier.length());
+        /*for(int i=0 ; i<contenuFichier.length() ; i++)
+        {
+            System.out.println(" !!!  "+contenuFichier.charAt(i));
+        }*/
         
+        // on trouve le bon caractère à changer puisque les espaces et les sauts de lignes comptent comme des caractères
+        int numeroCaracAChanger = (row)*19+(column-1)*2;
+        StringBuilder myName = new StringBuilder(contenuFichier);
+        myName.setCharAt(numeroCaracAChanger, numero);
+
+        //System.out.println(myName);
+        
+        contenuFichier = myName.toString();
+        
+        try {
+            File file = new File("test.txt");
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            
+            // remplace le fichier en effaçant son contenu et en écrivant dedans
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            try (BufferedWriter bw = new BufferedWriter(fw)) {
+                bw.write(contenuFichier);
+            }
+
+
+        } catch (IOException e) {
+            System.out.println("Erreur fichier maj");
+        }
         
       setChanged();
       notifyObservers();
@@ -121,4 +158,22 @@ public class Jeu extends Observable{
         return lastValue;
     }
 
+    public static String loadFile(File f) {
+        try {
+           BufferedInputStream in = new BufferedInputStream(new FileInputStream(f));
+           StringWriter out = new StringWriter();
+           int b;
+           while ((b=in.read()) != -1)
+               out.write(b);
+           out.flush();
+           out.close();
+           in.close();
+           return out.toString();
+        }
+        catch (IOException ie)
+        {
+            System.out.println("Erreur loadFile");
+        }
+        return null;
+    }
 }
