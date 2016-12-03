@@ -12,7 +12,7 @@ public class CaseBloquante extends Case {
     public CaseBloquante(int _valeur) {
         valeur = _valeur;
         
-        tab = new Groupe[3];
+        tab = new Groupe();
         conflit = false;
     }
 }

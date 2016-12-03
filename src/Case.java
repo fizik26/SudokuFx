@@ -10,7 +10,7 @@
  */
 public class Case {
     int valeur;
-    Groupe tab[];
+    Groupe tab;
     boolean conflit;
     
     public Case(int _valeur)
@@ -22,17 +22,17 @@ public class Case {
     {
         conflit = false;
         valeur = 0;
-        tab = new Groupe[3];
+        tab = new Groupe();
     }
     
-    public Case(int _valeur , Groupe[] tab, boolean conflit)
+    public Case(int _valeur , Groupe tab, boolean conflit)
     {
         this.valeur = _valeur;
         this.tab = tab;
         this.conflit = false;
     }
     
-    public void maj(int val)
+    /*public void maj(int val)
     {
         this.conflit = false;
 
@@ -41,10 +41,10 @@ public class Case {
                 conflit = true;
             }
         }
-    }
+    }*/
     
-    // récupération du groupe de la case
-    public Groupe[] getGroupe()
+        // récupération du groupe de la case
+    public Groupe getGroupe()
     {
         return tab;
     }
@@ -52,11 +52,7 @@ public class Case {
     // donne un groupe à la case
     public void setGroupe(Groupe groupe)
     {
-        int i = 0;
-
-        while (this.tab[i] != null)
-            i++;
-        this.tab[i] = groupe;
+        this.tab = groupe;
     }
     
     //accesseur : retourne la valeur de la case

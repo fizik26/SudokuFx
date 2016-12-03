@@ -89,7 +89,6 @@ public class VueSudoku extends Application implements Observer{
             // retour à la ligne dès qu'il y a 9 valeurs dans une ligne
             if (column > 8) {
                 column = 0;
-                row++;
             }
 
             final int c = column;
@@ -99,9 +98,8 @@ public class VueSudoku extends Application implements Observer{
                 //System.out.print(" iiiiiii " +ke.getCharacter());
                 
                 // test si le charactere entré est un int compris entre 1 et 9
-                //int valInt = Integer.parseInt(ke.getCharacter());
                 String valChar = ke.getCharacter();
-                System.out.println(" rrrr   "+valChar);
+
                 if("1".equals(valChar) || "2".equals(valChar) || "3".equals(valChar) || "4".equals(valChar) || "5".equals(valChar) || "6".equals(valChar) || "7".equals(valChar) || "8".equals(valChar) || "9".equals(valChar))
                 {
                 System.out.print(" iiiiiii " +ke.getCharacter());
@@ -116,6 +114,10 @@ public class VueSudoku extends Application implements Observer{
                     }
                 }
             });
+            if(column == 0)
+            {
+                row++;
+            }
         }
         
         // affichage des bordures
