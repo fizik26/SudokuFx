@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -21,6 +22,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
 
 /**
  *
@@ -65,11 +68,16 @@ public class VueSudoku extends Application implements Observer{
         affichage.setFont(Font.font ("Verdana", 20));
         affichage.setFill(Color.RED);
         border.setTop(affichage);
+        /*HBox hbox = new HBox();
+        Button boutonSauvegarder = new Button("Sauvegarder");
+        hbox.setAlignment(Pos.LEFT);
+        hbox.getChildren().add(boutonSauvegarder);
+        border.setBottom(hbox);*/
 
         // création des bouton et placement dans la grille
         for (int i=0 ; i<81 ; i++) {        
             // texte qui sera ajouté dans le sudoku
-            final TextField t = new TextField();
+            TextField t = new TextField();
             //final Text t = new Text();
             
             // si il y a un 0 , on affiche une case vide
@@ -77,7 +85,6 @@ public class VueSudoku extends Application implements Observer{
                 nombresSudoku[i] = " ";
             
             t.setPromptText(nombresSudoku[i]);
-            
             // pour TextField
             t.setPrefWidth(50);
             
@@ -120,6 +127,8 @@ public class VueSudoku extends Application implements Observer{
             }
         }
         
+        
+
         // affichage des bordures
         gPane.setGridLinesVisible(true);
         gPane.setStyle("-fx-background-color: white; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
