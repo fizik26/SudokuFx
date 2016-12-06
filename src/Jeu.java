@@ -132,7 +132,15 @@ public class Jeu extends Observable{
         } catch (IOException e) {
             System.out.println("Erreur fichier maj");
         }*/
-    // **********************************************************    
+    // **********************************************************
+
+       
+        tabLigne[row].setCaseValeur(column-1,Character.getNumericValue(numero)); // on ajoute la valeur à la case
+        Case c = tabLigne[row].getCase(column-1); // c est égale à l'adresse de la case à laquelle on a ajouté une valeur
+        
+        if( ! tabLigne[row].estEnConflit(c) )
+            System.out.println("On modifie bien sans conflit");
+        
       setChanged();
       notifyObservers();
     }

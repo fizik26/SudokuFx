@@ -23,7 +23,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 
 /**
  *
@@ -42,6 +44,7 @@ public class VueSudoku extends Application implements Observer{
     public void start(Stage primaryStage){
 
         // initialisation du modèle que l'on souhaite utiliser
+
         Jeu m = new Jeu();
         m.addObserver(this);
         
@@ -158,6 +161,17 @@ public class VueSudoku extends Application implements Observer{
                 }
             });
             
+            buttonResoudre.setOnAction((ActionEvent e) -> {
+                System.out.println("Résoudre le Sudoku");
+                m.solve(0, 0);
+            });
+
+            buttonSauvegarder.setOnAction((ActionEvent e) -> {
+                System.out.println("Sauvegarder");
+                File file = new File("sauvegarde.txt");
+                m.sauverGrille(file);
+            });
+            
             
             
         primaryStage.setTitle("Sudoku");
@@ -176,13 +190,20 @@ public class VueSudoku extends Application implements Observer{
     @Override
     public void update(Observable o, Object arg) {
         System.out.println("     On est dans VueSudoku.update()       ");
-        try {
+        /*try {
             System.out.println("on relance init pour actualiser la vue ");
             Jeu sudo = new Jeu();
             sudo.init(VueSudoku.nomFichier);
         } catch (IOException ex) {
             Logger.getLogger(VueSudoku.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        VBox dialogVbox = new VBox(20);
+        dialogVbox.getChildren().add(new Text("This is a Dialog"));
+        Scene dialogScene = new Scene(dialogVbox, 300, 200);
+        dialog.setScene(dialogScene);
+        dialog.show();
     }
     
     public File ouvrirFichier(Scene scene)
