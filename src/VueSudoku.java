@@ -14,7 +14,6 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -22,7 +21,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 /**
@@ -51,10 +51,24 @@ public class VueSudoku extends Application implements Observer{
         // initialisation du modèle que l'on souhaite utiliser
         m = new Jeu();
         m.addObserver(this);
-        // gestion du placement (permet de placer le champ Text affichage en haut, et GridPane gPane au centre)
+        
         BorderPane border = new BorderPane();
         
-        // permet de placer les différents boutons dans une grille
+        // création de la box qui contiendra les boutons
+        HBox boxMenu = new HBox();
+
+        boxMenu.setAlignment(Pos.TOP_LEFT);        
+        
+        Button buttonCharger = new Button("Charger un sudoku");
+        Button buttonSauvegarder = new Button("Sauvegarder la partie");
+        Button buttonResoudre = new Button("Résoudre le sudoku");
+        
+        boxMenu.getChildren().add(buttonCharger);
+        boxMenu.getChildren().add(buttonSauvegarder);
+        boxMenu.getChildren().add(buttonResoudre);
+                
+        
+        // permet de placer les différentes cases dans une grille
         gPane = new GridPane();
 
         // nombre de colonne, utile pour la disposition dans la grille
@@ -63,16 +77,9 @@ public class VueSudoku extends Application implements Observer{
         // nom de ligne, utile pour la disposition dans la grille
         int row;
         row = 0;
-                
-        affichage = new Text("");
-        affichage.setFont(Font.font ("Verdana", 20));
-        affichage.setFill(Color.RED);
-        border.setTop(affichage);
-        /*HBox hbox = new HBox();
-        Button boutonSauvegarder = new Button("Sauvegarder");
-        hbox.setAlignment(Pos.LEFT);
-        hbox.getChildren().add(boutonSauvegarder);
-        border.setBottom(hbox);*/
+        
+        // positionnement de la box contenant le menu
+        border.setTop(boxMenu);
 
         // création des bouton et placement dans la grille
         for (int i=0 ; i<81 ; i++) {        
@@ -83,6 +90,8 @@ public class VueSudoku extends Application implements Observer{
             // si il y a un 0 , on affiche une case vide
             if(nombresSudoku[i].equals("0"))
                 nombresSudoku[i] = " ";
+            else
+                t.setDisable(true);
             
             t.setPromptText(nombresSudoku[i]);
             // pour TextField
@@ -134,8 +143,22 @@ public class VueSudoku extends Application implements Observer{
         gPane.setStyle("-fx-background-color: white; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
         
         border.setCenter(gPane);
+        
+        /*MenuBar menuBar = new MenuBar();
+ 
+        // --- Menu File
+        Menu menuFile = new Menu("File");
+ 
+        // --- Menu Edit
+        Menu menuEdit = new Menu("Edit");
+ 
+        // --- Menu View
+        Menu menuView = new Menu("View");
+ 
+        menuBar.getMenus().addAll(menuFile, menuEdit, menuView);*/
  
         Scene scene = new Scene(border , Color.WHITE);
+        //scene.getRoot().getChildrenUnmodifiable().addAll(menuBar);
 
         primaryStage.setTitle("Sudoku");
         primaryStage.setScene(scene);
