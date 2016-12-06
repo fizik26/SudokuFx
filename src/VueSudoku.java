@@ -21,9 +21,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 
 /**
  *
@@ -135,31 +137,33 @@ public class VueSudoku extends Application implements Observer{
                 row++;
             }
         }
-        
-        
 
         // affichage des bordures
         gPane.setGridLinesVisible(true);
         gPane.setStyle("-fx-background-color: white; -fx-padding: 2; -fx-hgap: 2; -fx-vgap: 2;");
         
         border.setCenter(gPane);
-        
-        /*MenuBar menuBar = new MenuBar();
- 
-        // --- Menu File
-        Menu menuFile = new Menu("File");
- 
-        // --- Menu Edit
-        Menu menuEdit = new Menu("Edit");
- 
-        // --- Menu View
-        Menu menuView = new Menu("View");
- 
-        menuBar.getMenus().addAll(menuFile, menuEdit, menuView);*/
  
         Scene scene = new Scene(border , Color.WHITE);
-        //scene.getRoot().getChildrenUnmodifiable().addAll(menuBar);
-
+        
+        
+                
+        // ****************   évènements sur les boutons 
+        
+            // évènement bouton charger
+            buttonCharger.setOnAction((ActionEvent e) -> {
+                System.out.println("Accepted");
+                File test = ouvrirFichier(scene);
+                try {
+                    m.init(test.getAbsolutePath());
+                    System.out.println("OUIIIIIIIIIIIIIIIII");
+                } catch (IOException ex) {
+                    Logger.getLogger(VueSudoku.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+            
+            
+            
         primaryStage.setTitle("Sudoku");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -178,5 +182,18 @@ public class VueSudoku extends Application implements Observer{
     public void update(Observable o, Object arg) {
         System.out.println("     On est dans VueSudoku.update()       ");
         MAJ();
+    }
+    
+    public File ouvrirFichier(Scene scene)
+    {
+        FileChooser fileChooser	= new FileChooser();
+        fileChooser.setTitle("FileChooserExample");
+        File homeDir = new File(System.getProperty("user.home"));
+        fileChooser.setInitialDirectory(homeDir);
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showOpenDialog(scene.getWindow());
+
+        return file;
     }
 }

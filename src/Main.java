@@ -26,9 +26,9 @@ public class Main {
         
         Jeu sudoku;
         sudoku = new Jeu();
-        sudoku.init("test4.txt");
+        sudoku.init("test3.txt");
       
-        sudoku.solve(0, 0); //résoudre le sudoku.
+        //sudoku.solve(0, 0); //résoudre le sudoku.
          
         System.out.println("Lignes");
         for(int i=0; i<sudoku.tabLigne.length ;i++) //ligne
@@ -69,7 +69,7 @@ public class Main {
             }
         }
         
-        sudoku.gagne(); 
+        //sudoku.gagne(); 
          
         VueSudoku.initVal(s);
         VueSudoku.main(args);
