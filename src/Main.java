@@ -21,25 +21,22 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException  {
          
-        String[] s = new String[81];
-        int cpt = 0;
+        //String[] s = new String[81];
+        //int cpt = 0;
         
-        Jeu sudoku;
+        /*Jeu sudoku;
         sudoku = new Jeu();
         sudoku.init("test3.txt");
       
-        //sudoku.solve(0, 0); //résoudre le sudoku.
+        sudoku.solve(0, 0); //résoudre le sudoku.
          
         System.out.println("Lignes");
         for(int i=0; i<sudoku.tabLigne.length ;i++) //ligne
         {
-            //System.out.print(sudoku.tabLigne[i].getGroupeConflit());
             for(int j=0; j<sudoku.tabLigne.length ; j++) //colonne
             {
                 System.out.print(sudoku.tabLigne[i].getCaseValeur(j)+" ");
                 if(j==(sudoku.tabLigne.length-1)) System.out.print("\n");
-                s[cpt] = Integer.toString(sudoku.tabLigne[i].getCaseValeur(j));
-                cpt++;
             }
         }
         
@@ -69,9 +66,10 @@ public class Main {
             }
         }
         
-        //sudoku.gagne(); 
-         
-        VueSudoku.initVal(s);
+        sudoku.gagne(); */
+        
+        // on envoie un nom à la vue, nom du fichier txt qui sera ouvert
+        //VueSudoku.setNomFichier("test3.txt");
         VueSudoku.main(args);
     }
 }

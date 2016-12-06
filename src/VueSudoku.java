@@ -11,7 +11,6 @@ import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -22,7 +21,6 @@ import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -33,26 +31,25 @@ import javafx.stage.FileChooser;
  */
 public class VueSudoku extends Application implements Observer{
     
-    public static String[] nombresSudoku;       
-    // création du modèle
-    Jeu m;
+    //public static String[] nombresSudoku;
+    public static String nomFichier;
     // affiche la saisie et le résultat
     Text affichage;
         
     private GridPane gPane;
-    
-    private void MAJ() {
-        ObservableList lst = gPane.getChildren();
-        System.out.println("     On est dans VueSudoku.MAJ()       ");
-    }
-            
             
     @Override
     public void start(Stage primaryStage){
 
         // initialisation du modèle que l'on souhaite utiliser
-        m = new Jeu();
+        Jeu m = new Jeu();
         m.addObserver(this);
+        
+        try {
+            m.init(VueSudoku.nomFichier);
+        } catch (IOException ex) {
+            Logger.getLogger(VueSudoku.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         BorderPane border = new BorderPane();
         
@@ -90,12 +87,12 @@ public class VueSudoku extends Application implements Observer{
             //final Text t = new Text();
             
             // si il y a un 0 , on affiche une case vide
-            if(nombresSudoku[i].equals("0"))
-                nombresSudoku[i] = " ";
+            if(m.nombresSudoku[i].equals("0"))
+                m.nombresSudoku[i] = " ";
             else
                 t.setDisable(true);
             
-            t.setPromptText(nombresSudoku[i]);
+            t.setPromptText(m.nombresSudoku[i]);
             // pour TextField
             t.setPrefWidth(50);
             
@@ -111,16 +108,12 @@ public class VueSudoku extends Application implements Observer{
 
             final int c = column;
             final int r = row;
-            t.setOnKeyTyped ((KeyEvent ke) -> {
-                // affichage de la touche sélectionnée
-                //System.out.print(" iiiiiii " +ke.getCharacter());
-                
-                // test si le charactere entré est un int compris entre 1 et 9
+            t.setOnKeyTyped ((KeyEvent ke) -> {                
+                // test si le caractere entré est un int compris entre 1 et 9
                 String valChar = ke.getCharacter();
 
                 if("1".equals(valChar) || "2".equals(valChar) || "3".equals(valChar) || "4".equals(valChar) || "5".equals(valChar) || "6".equals(valChar) || "7".equals(valChar) || "8".equals(valChar) || "9".equals(valChar))
                 {
-                System.out.print(" iiiiiii " +ke.getCharacter());
                     try {
                         // renvoie à la mise à jour du modèle le numéro de la ligne et le numéro de la colonne
                         File file = new File("test.txt");
@@ -155,7 +148,10 @@ public class VueSudoku extends Application implements Observer{
                 System.out.println("Accepted");
                 File test = ouvrirFichier(scene);
                 try {
-                    m.init(test.getAbsolutePath());
+                    //VueSudoku.nomFichier = test.getAbsolutePath();
+                    // création d'un nouveau jeu
+                    Jeu sudo = new Jeu();
+                    sudo.init(test.getAbsolutePath());
                     System.out.println("OUIIIIIIIIIIIIIIIII");
                 } catch (IOException ex) {
                     Logger.getLogger(VueSudoku.class.getName()).log(Level.SEVERE, null, ex);
@@ -169,19 +165,24 @@ public class VueSudoku extends Application implements Observer{
         primaryStage.show();
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        /*Jeu sudoku;
+        sudoku = new Jeu();
+        sudoku.init(VueSudoku.nomFichier);*/
+        nomFichier = "test3.txt";
         launch(args);
-    }
-    
-    public static void initVal(String[] sud)
-    {
-        VueSudoku.nombresSudoku = sud;
     }
 
     @Override
     public void update(Observable o, Object arg) {
         System.out.println("     On est dans VueSudoku.update()       ");
-        MAJ();
+        try {
+            System.out.println("on relance init pour actualiser la vue ");
+            Jeu sudo = new Jeu();
+            sudo.init(VueSudoku.nomFichier);
+        } catch (IOException ex) {
+            Logger.getLogger(VueSudoku.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public File ouvrirFichier(Scene scene)
@@ -195,5 +196,10 @@ public class VueSudoku extends Application implements Observer{
         File file = fileChooser.showOpenDialog(scene.getWindow());
 
         return file;
+    }
+    
+    public static void setNomFichier(String nom)
+    {
+        VueSudoku.nomFichier = nom;
     }
 }

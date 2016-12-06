@@ -23,9 +23,12 @@ public class Groupe {
     public void insertionCase(Case c)
     {
         int i=0;
+        
         while(tab[i] != null)
         {
+            System.out.println(" Avant :  "+i);
             i++;
+            System.out.println(" Apres :  "+i);
         }
         tab[i] = c;
             

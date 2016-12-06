@@ -22,6 +22,7 @@ public class Jeu extends Observable{
     public Groupe tabLigne[];
     public Groupe tabCol[];
     public Groupe tabRegion[][];
+    public String[] nombresSudoku;
     
     public Case grilleCase9x9[][];
 
@@ -32,6 +33,7 @@ public class Jeu extends Observable{
     //construction d'une grille vide
     public Jeu()
     {
+        nombresSudoku = new String[81];
         tabRegion = new Groupe[3][3];
         for(int i=0;i<3;i++)
 		{
@@ -57,7 +59,7 @@ public class Jeu extends Observable{
     }
     
     public void init(String data) throws IOException
-    {        
+    {
         BufferedReader br = new BufferedReader(new FileReader(data));
 
         String ligne;
@@ -92,25 +94,20 @@ public class Jeu extends Observable{
         }
         br.close();
         
-        setChanged();
-        notifyObservers();
+        // on rempli la variable qui servira à remplir les textField de la vue
+        nombresSudoku = initVals();             
+        
 }
   
-    public void maj(int row, int column, char numero, String contenuFichier) throws IOException {
-        // modifier le fichier .txt en remplaçant le 0 par le nombre rentré par l'utilisateur
-        //System.out.println(contenuFichier.length());
-        /*for(int i=0 ; i<contenuFichier.length() ; i++)
-        {
-            System.out.println(" !!!  "+contenuFichier.charAt(i));
-        }*/
-        System.out.println(" colonne envoyée dans maj     "+column+"  "+row);
-        
+    public void maj(int row, int column, char numero, String contenuFichier) throws IOException 
+    {
         if(column == 0)
             column = 9;
+        
+    // **************************************************** modification fichier lorsque l'utilisateur rentre un chiffre    
         // on trouve le bon caractère à changer puisque les espaces et les sauts de lignes comptent comme des caractères
-        System.out.println(" ligne de la modif    "+row+"   colonne de la modif   "+column);
-        int numeroCaracAChanger = (row)*19+(column-1)*2;
-        System.out.println("Numéro char   "+numeroCaracAChanger);
+        /*int numeroCaracAChanger = (row)*19+(column-1)*2;
+        
         StringBuilder myName = new StringBuilder(contenuFichier);
         myName.setCharAt(numeroCaracAChanger, numero);
 
@@ -134,13 +131,13 @@ public class Jeu extends Observable{
 
         } catch (IOException e) {
             System.out.println("Erreur fichier maj");
-        }
-        
+        }*/
+    // **********************************************************    
       setChanged();
       notifyObservers();
     }
 
-   public boolean getErr() {
+    public boolean getErr() {
         return err;
     }
     
@@ -262,5 +259,27 @@ public class Jeu extends Observable{
 	{
             e.printStackTrace();
 	}
+    }
+     
+    public String[] initVals()
+    {
+        String[] s = new String[81];
+        int cpt = 0;
+        
+        for (Groupe tabLigne1 : tabLigne) //ligne
+        {
+            for (int j = 0; j<tabLigne.length; j++) //colonne
+            {
+                s[cpt] = Integer.toString(tabLigne1.getCaseValeur(j));
+                cpt++;
+            }
+        }
+        
+        return s;
+    }
+
+    @Override
+    public void notifyObservers() {
+        super.notifyObservers();
     }
 }
