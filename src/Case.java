@@ -10,27 +10,36 @@
  */
 public class Case {
     int valeur;
-    Groupe tab;
+    Groupe tabGroupe[]; //pour savoir la case appartient à quel groupe (groupe = ligne + colonne + région)
     boolean conflit;
     
     public Case(int _valeur)
     {
         this.valeur = _valeur;
+        conflit = false;
+        
+        tabGroupe = new Groupe[3]; //[0] : ligne, [1] : colonne, [2] : région 
     }
     
     public Case()
     {
         conflit = false;
         valeur = 0;
-        tab = new Groupe();
+        tabGroupe = new Groupe[3]; //[0] : ligne, [1] : colonne, [2] : région 
     }
     
-    public Case(int _valeur , Groupe tab, boolean conflit)
+    //vérifie si la case est en conflit avec sa ligne, sa colonne et sa région
+    public boolean verifieConflitCase()
+    {
+        return (this.tabGroupe[0].estEnConflit(this)) && (this.tabGroupe[1].estEnConflit(this)) && (this.tabGroupe[2].estEnConflit(this));
+    }
+    
+    /*public Case(int _valeur , Groupe tab, boolean conflit)
     {
         this.valeur = _valeur;
         this.tab = tab;
         this.conflit = false;
-    }
+    }*/
     
     /*public void maj(int val)
     {
@@ -43,16 +52,19 @@ public class Case {
         }
     }*/
     
-        // récupération du groupe de la case
-    public Groupe getGroupe()
+    // récupération du groupe de la case
+    public Groupe[] getGroupe()
     {
-        return tab;
+        return tabGroupe;
     }
 
     // donne un groupe à la case
-    public void setGroupe(Groupe groupe)
+    public void setGroupe(Groupe tabLigne, Groupe tabColonne, Groupe tabRegion )
     {
-        this.tab = groupe;
+        this.tabGroupe[0] = tabLigne;
+        this.tabGroupe[1] = tabColonne;
+        this.tabGroupe[2] = tabRegion;
+        
     }
     
     //accesseur : retourne la valeur de la case
@@ -65,5 +77,16 @@ public class Case {
     public void setValeur(int n)
     {
         valeur = n;
+    }
+    
+    public boolean getConflit()
+    {
+        return conflit;
+    }
+    
+    
+    public void setConflit(boolean conflit)
+    {
+        this.conflit = conflit;
     }
 }

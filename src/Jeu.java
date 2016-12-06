@@ -19,57 +19,41 @@ import java.util.Observable;
  */
 public class Jeu extends Observable{
     
-    public Groupe[][] jeu;
-    public Case[][] jeu2;
+    public Groupe tabLigne[];
+    public Groupe tabCol[];
+    public Groupe tabRegion[][];
     
-    public Groupe lignes[]; //les 9 lignes
-    public Groupe colonnes[]; //les 9 colonnes
-    public Groupe regions[][]; //les 9 regions
-    
+    public Case grilleCase9x9[][];
+
+    boolean err;
     double lastValue;
-    boolean err = false;
 
 
     //construction d'une grille vide
     public Jeu()
     {
-        jeu = new Groupe[9][9];
-        for(int i =0; i< 9; i++)
-        {
-            for(int j =0; j<9;j++)
+        tabRegion = new Groupe[3][3];
+        for(int i=0;i<3;i++)
+		{
+            for(int j=0;j<3;j++)
             {
-                jeu[i][j] = new Groupe();
+                tabRegion[i][j] = new Groupe();
             }
         }
-        
-        jeu2 = new Case[9][9];
-        for(int a =0; a< 9; a++)
-        {
-            for(int b =0; b<9;b++)
-            {
-                jeu2[a][b] = new Case(0);
-
-            }
-        }
-        
-        //sudoku avec des ligne
-        lignes = new Groupe[9];
-        colonnes = new Groupe[9];
-        for(int a =0; a< 9; a++)
-        {
-            lignes[a] = new Groupe();
-            colonnes[a] = new Groupe();
-        }
-        
-        regions = new Groupe[3][3];
-        for(int a = 0; a < 3; a++)
-        {
-            for(int b = 0; b < 3; b++)
-            {
-                regions[a][b] = new Groupe();
-            }
             
+        tabLigne = new Groupe[9];
+        for(int i=0;i<tabLigne.length;i++)
+	{
+            tabLigne[i] = new Groupe();
         }
+        
+        tabCol = new Groupe[9];
+        for(int i=0;i<tabCol.length;i++)
+	{
+            tabCol[i] = new Groupe();
+        }
+        
+        grilleCase9x9 = new Case[9][9];
     }
     
     public void init(String data) throws IOException
@@ -83,176 +67,35 @@ public class Jeu extends Observable{
             while ((ligne = br.readLine()) != null) 
             {
                 String[] td = ligne.split(" ");
-              // System.out.println(Arrays.toString(td));
                 for(int i=0 ; i<td.length ; i++)
                 {
                     Case c = null;
 
-                     if("0".equals(td[i])) //si c'est à 0, c'est une case non bloquante 
+                    if("0".equals(td[i])) //si c'est à 0, c'est une case non bloquante 
                     {
                         c = new CaseNonBloquante(0);
-                        jeu[j][i].setCase(j, c); //on ajoute c à la case correspondant au j (groupe ligne), i la colonne
-                        jeu2[j][i].setValeur(c.getValeur());
-                        lignes[j].setCase(i, c);
-                        colonnes[j].setCase(i, c);
-                        //regions[j][i].setCaseRegion(j, i, c);
-                        this.setCaseNumRegion(j, i, c.getValeur());
-                        //regions[j/3][i/3].setCaseValeurRegion(j%9, i%9, c.getValeur());
                     }
                     else //sinon c'est une case bloquante et on lui met la valeur présente dans td[i]
                     {
-                        int valeurSplit =  Integer.parseInt(td[i]);
+                        int valeurSplit =  Integer.parseInt(td[i]); 
                         c = new CaseBloquante(valeurSplit);
-                        jeu[j][i].setCase(j, c);
-                        jeu2[j][i].setValeur(c.getValeur());
-                        lignes[j].setCase(i, c);
-                        colonnes[j].setCase(i, c);
-                        //regions[j][i].setCaseRegion(j, i, c);
-                        this.setCaseNumRegion(j, i, c.getValeur());
-                       // regions[j/3][i/3].setCaseValeurRegion(j%9, i%9, c.getValeur());
-
                     }
 
-                    //int numL = i/9; // numéro de la ligne
-                    //int numC = i%9; // numéro de la colonne
-
-                        //on ajoute la case aux groupes correspondant??
-                        //ligne[numL].ajouter(c);
-                        //colonne[numC].ajouter(c);
-                        //carre[numL/3][numC/3].ajouter(c);
+                    tabLigne[j].insertionCase(c);   //on ajoute les cases aux groupes
+                    tabCol[i].insertionCase(c);
+                    tabRegion[(int)(j/3)][(int)(i/3)].insertionCase(c);
+                    c.setGroupe(tabLigne[j],tabCol[i],tabRegion[(int)(j/3)][(int)(i/3)]); //on ajoute les groupes aux cases
+                    
                 }
                 j=j+1;
             }
         }
         br.close();
+        
         setChanged();
         notifyObservers();
 }
-    
-
-    
-     //regarde si la case est en conflit avec sa ligne, col et region
-    public boolean estConflit(Case c, int ligne, int col)
-    {
-        int i,x,y;
-        
-        // On vérifie d'abord pour la ligne
-        for(i=0;i<9;i++) 
-          {
-            if(jeu2[ligne][i].valeur!=0) 
-              {
-                if(i!=col)
-                  {
-                    if(jeu2[ligne][i].valeur==c.getValeur())
-                      return true;
-                  }
-              }
-          }
-
-        // On verifie maintenant pour la colonne
-
-        for(i=0;i<9;i++) 
-          {
-            if(jeu2[i][col].valeur!=0)
-              {
-                if(i!=ligne)
-                  {
-                    if(jeu2[i][col].valeur==c.getValeur())
-                      return true;
-                  }
-              }
-          }
-
-        // On verifie maintenant la région
-
-        x=(ligne/3)*3;
-        y=(col/3)*3;
-
-        for(i=y;i<y+3;i++)  
-          {
-            if(jeu2[x][i].valeur!=0)
-              {
-                if(i!=col || x!=ligne)
-                  {
-                    if(jeu2[x][i].valeur==c.getValeur())
-                      return true;
-                  }
-              }
-          }
-
-        for(i=y;i<y+3;i++)
-          {
-            if(jeu2[x+1][i].valeur!=0)
-              {
-                if(i!=col || x+1!=ligne)
-                  {
-                    if(jeu2[x+1][i].valeur==c.getValeur())
-                      return true;
-                  }
-              }
-          }
-
-        for(i=y;i<y+3;i++)
-          {
-            if(jeu2[x+2][i].valeur!=0)
-              {
-                if(i!=col || x+2!=ligne)
-                  {
-                    if(jeu2[x+2][i].valeur==c.getValeur())
-                      return true;
-                  }
-              } 
-          }
-
-        return false;
-        
-    }
-
-    
-    //retourne le groupe de coordonnée i j
-    public Groupe getGroupe(int i, int j)
-    {
-        return jeu[i][j];
-    }
-
-    
-    public void setGroupe(Groupe[][] g)
-    {
-        jeu = g ;
-    }
-    
-
-    public Groupe getGroupeRegion(int i, int j)
-    {
-        return regions[i][j];
-    }
-    
-    //retourne la region dans laquelle se trouve la case de coord i j
-    public Groupe getRegionCase(int i, int j)
-    {
-        return regions[(int)(i/3)][(int)(j/3)];
-    }
-    
-    public void setRegion(Groupe[][] g)
-    {
-        regions = g;
-    }
-    
-    public int getCaseValeurRegion(int i, int j)
-    {
-        return regions[(int)(i/3)][(int)(j/3)].getCaseValeurRegion(i%3, j%3);
-    }
-    
-    public void setCaseNumRegion(int i, int j, int val)
-    {
-        regions[(int)(i/3)][(int)(j/3)].setCaseValeurRegion(i%3, j%3, val);
-    }
-    
-    public void setCaseRegion(int i,int j, Case c)
-    {
-        regions[(int)(i/3)][(int)(j/3)].setCaseRegion(i, j, c);
-    }
-    
+  
     public void maj(int row, int column, char numero, String contenuFichier) throws IOException {
         // modifier le fichier .txt en remplaçant le 0 par le nombre rentré par l'utilisateur
         //System.out.println(contenuFichier.length());
@@ -323,178 +166,101 @@ public class Jeu extends Observable{
         }
         return null;
     }
-    
-           /** Checks if num is an acceptable value for the box around row and col */
-   protected boolean checkBox( int row, int col, int num )
-   {
-      row = (row / 3) * 3 ;
-      col = (col / 3) * 3 ;
 
-      for( int r = 0; r < 3; r++ )
-         for( int c = 0; c < 3; c++ )
-         if( jeu2[row+r][col+c].getValeur() == num )
-            return false ;
-
-      return true ;
-   }
-   
-   
-
-   public int resoudre(int col)
-   {
-        System.out.println("col resoudre = " + col);
-        if(col > 8)
-        {
-            System.out.println("il n y a plus rien a resoudre");
-            return 0;
-        }
-        else
-        {   //resoudre une ligne
-            if( (lignes[0].getCaseValeurLigne(col) != 0))
-            {
-                System.out.println("col if pas 0 = " + col);
-                return resoudre(col+1) ;
-            }
-            else if(lignes[0].getCaseValeurLigne(col) == 0) //case vide
-            {
-                for( int num = 1; num < 10; ++num )
-                {
-                    System.out.println("num = " + num);
-                    lignes[0].ligne[col].setValeur(num);  //on met la ligne avec le chiffre
-                    if(!(lignes[0].estEnConflitLigne(lignes[0].getCaseLigne(col)))) //on teste si c'est en conflit avec la ligne
-                    {
-                        
-                        //lignes[0].ligne[col].setValeur(num);  //on laisse le chiffre
-                        System.out.println("col if 0 = " + col);
-                        return resoudre(col+1) ;
-                    }
-                    else //si un conflit
-                    {
-                        lignes[0].ligne[col].setValeur(0); //on enleve le chiffre
-                    }
-                 }
-                // lignes[0].ligne[col].setValeur(0); //pas de valeur trouvé, on le remet à 0 pour refaire
-             }
-             
-             for(int i=0; i<9; i++) //affichage de la ligne 
-             {
-                System.out.print(lignes[0].ligne[i].getValeur() + " ");
-                if(i==8) System.out.println("");
-             }
-             //return 0;
-        }
-        return 0;
-   }
-   
-   public int suivant(int col)
-   {
-        if( col < 8 )
-        {
-            System.out.println("suivant");
-            System.out.println("col suivant = " + col);
-            resoudre(col+1) ;
-        }
-        return 0;
-   }
-
-   
-   
-   
-   public int resoudre(int row, int col)
-   {
-       System.out.println("row resoudre = " + row);
-        System.out.println("col resoudre = " + col);
+    public void ajouterCase(int row, int col, int val)
+    {
+        this.tabLigne[row].setCaseValeur(col, val); //pas besoin de faire la meme chose pour la colonne et la région, car ça le fait déjà "automatiquement"
+    }
         
-        if(col >= 8 && row >= 8)
+    public boolean solve(int i, int j)
+    {
+        //si j (colonne) = 9, on passe à la ligne suivante i et on remet j à 0
+        if (j == 9) 
         {
-            System.out.println("il n y a plus rien a resoudre");
-            return 0;
-        }
-        else
-        {
-             if( lignes[row].getCaseValeurLigne(col) != 0 )
-             {
-                 System.out.println("row if pas 0 = " + row);
-                 System.out.println("col if pas 0 = " + col);
-                 return suivant(row,col) ;
-             }
-             else if(lignes[row].getCaseValeurLigne(col) == 0) //case vide
-             {
-                 for( int num = 1; num < 10; ++num )
-                 {
-                     System.out.println("num = " + num);
-                     lignes[row].ligne[col].setValeur(num);  //on met la ligne avec le chiffre
-                     colonnes[row].colonne[col].setValeur(num);
-                     this.setCaseNumRegion(row, col, num);
-                    if( !(lignes[row].estEnConflitLigne(lignes[row].getCaseLigne(col))) && !(colonnes[row].estEnConflitColonne(colonnes[row].getCaseColonne(col))) && !(regions[row/3][col/3].estEnConflitRegion(0,0, regions[row/3][col/3].getCaseRegion(row%3, col%3)))) //on teste si c'est en conflit avec la ligne
-                    {
-                        //on laisse le chiffre
-                        System.out.println("row if 0 = " + row);
-                        System.out.println("col if 0 = " + col);
-                        return suivant(row,col) ;
-                    }
-                    else
-                    {
-                        //on enleve le chiffre
-                        lignes[row].ligne[col].setValeur(0); 
-                        colonnes[row].colonne[col].setValeur(num);
-                        this.setCaseNumRegion(row, col, 0);
-                    }
-                 }
-                // lignes[0].ligne[col].setValeur(0); //pas de valeur trouvé, on le remet à 0 pour refaire
-             }
-             
+            j=0;
+            if (++i == 9)
+                return true;
         }
         
-        System.out.println("Affichage des lignes");
-            for(int i=0; i<9; i++)
-            {
-                for(int j=0; j<9; j++)
-                {
-                    System.out.print(lignes[i].ligne[j].getValeur() + " ");
-                    if(j==8) System.out.println("");
-                }
+        if (tabLigne[i].getCaseValeur(j) != 0) //si la case a déjà une valeur au départ, on passe à la case suivante
+            return solve(i,j+1);
+		
+	//on regarde si on peut placer une valeur
+	for (int val = 1; val <= 9; ++val)
+	{
+            tabLigne[i].setCaseValeur(j, val);
+            Case c = tabLigne[i].getCase(j);
+            if( !((tabLigne[i].estEnConflit(c)) || (tabCol[j].estEnConflit(c)) || (tabRegion[i/3][j/3].estEnConflit(c))) ) //si l'un d'eux est à vrai, il y a un conflit			
+            {  //si pas de conflit
+                //on laisse la case telle qu'elle est et on passe au suivant
+                if(solve(i,j+1))
+                return true;	
             }
-            
-            System.out.println("Affichage des colonnes");
-            for(int i=0; i<9; i++)
-            {
-                for(int j=0; j<9; j++)
-                {
-                    System.out.print(colonnes[i].colonne[j].getValeur() + " ");
-                    if(j==8) System.out.println("");
-                }
-            }
-            
-            System.out.println("Affichage des régions");
-            for(int i = 0; i < 9; i++)
-            {
-                for(int j = 0; j < 9; j++)
-                {
-                    if(j==0) System.out.print("\n");
-                    System.out.print(regions[i/3][j/3].region[i%3][j%3].getValeur() +" ");
-                }
-                if(i==8) System.out.print("\n");
-            }
-        return 0;
-   }
-   
-   public int suivant(int row, int col)
-   {
-        if( col <= 8 )
-        {
-            System.out.println("suivant");
-            System.out.println("row suivant = " + row);
-            System.out.println("col suivant = " + col);
-            return resoudre(row,col+1) ;
-
         }
-        else if(col > 9)
-        {
-            System.out.println("ligne suivante");
-            return resoudre(row+1,0) ; //on passe à la ligne suivante
-        }
-        return 0;
-   }   
+        tabLigne[i].setCaseValeur(j, 0);
+	return false;
+    }
     
+    
+    //on regarde le champ conflit de chaque case, si tout est à faux, il n'y a pas de conflit donc on a gagné
+    public boolean gagne()
+    {
+        boolean gagne = tabLigne[0].getCaseConflit(0); //on le met égal au premier bool conflit du sudoku
+        for(int i=0; i<this.tabLigne.length ;i++) //ligne
+        {
+            for(int j=0; j<this.tabLigne.length ; j++) //colonne
+            {
+                if(tabLigne[i].getCaseValeur(j) == 0) //si une case est vide, donc à 0
+                {
+                    System.out.println("Gagné ? = false !!!");
+                    return false;
+                }
+                gagne = gagne && tabLigne[i].getCaseConflit(j); 
+            }
+        }
+        
+        System.out.println("Gagné ? = " + !gagne + " !!!");
+        return !gagne; //si tous les conflits sont à faux, on a gagné
+    }
+    
+    public boolean EstEnConflitLigneColonneRegion(Case c)
+    {
+        if(c.getGroupe()[0].estEnConflit(c) || c.getGroupe()[0].estEnConflit(c) || c.getGroupe()[0].estEnConflit(c))
+        {
+            return true;
+        }
+        return false;
+    }
+    
+     public void sauverGrille(File fichierCourant)
+    {
+	String nomFic = new String("");
+	try
+	{
+            nomFic = fichierCourant.getAbsolutePath();
+            try
+            {
+		FileWriter fichier = new FileWriter(nomFic);
+                for(int i=0;i<9;i++)
+		{
+                    for(int j=0;j<9;j++)
+                    {
+			fichier.write(this.tabLigne[i].getCaseValeur(j)+"");
+                        if(j<8) fichier.write(" "); //pour avoir un espace entre chaque chiffre
+        		if(j==8) fichier.write(13); //pour avoir un saut de ligne
+                    }
+			fichier.write("\n");		
+		}
+		fichier.close();			
+            }	
+            catch(IOException e)
+            {
+                System.out.println("impossible d'ecrire dans le fichier");
+            }
+	}
+	catch(NullPointerException e)
+	{
+            e.printStackTrace();
+	}
+    }
 }

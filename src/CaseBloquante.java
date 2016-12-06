@@ -10,9 +10,19 @@
  */
 public class CaseBloquante extends Case {
     public CaseBloquante(int _valeur) {
-        valeur = _valeur;
         
-        tab = new Groupe();
-        conflit = false;
+        this.valeur = _valeur;
+       // this.tab = new Groupe();
+       // this.conflit = false;
+    }
+    
+    public CaseBloquante getCaseBloquante()
+    {
+        return this;
+    }
+    
+    public void setCaseBloquante(int n)
+    {
+        valeur = n;
     }
 }

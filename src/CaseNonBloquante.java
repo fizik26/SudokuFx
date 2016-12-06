@@ -11,5 +11,7 @@
 public class CaseNonBloquante extends Case {
     public CaseNonBloquante(int _valeur) {
         valeur = _valeur;
+        //this.tab = new Groupe();
+        //this.conflit = false;
     }
 }
