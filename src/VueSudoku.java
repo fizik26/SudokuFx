@@ -21,11 +21,10 @@ import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.scene.input.KeyEvent;
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 
 /**
  *
@@ -39,13 +38,13 @@ public class VueSudoku extends Application implements Observer{
     Text affichage;
         
     private GridPane gPane;
+
+    Jeu m = new Jeu();
             
     @Override
     public void start(Stage primaryStage){
 
         // initialisation du modèle que l'on souhaite utiliser
-
-        Jeu m = new Jeu();
         m.addObserver(this);
         
         try {
@@ -95,7 +94,8 @@ public class VueSudoku extends Application implements Observer{
             else
                 t.setDisable(true);
             
-            t.setPromptText(m.nombresSudoku[i]);
+            //t.setPromptText(m.nombresSudoku[i]);
+            t.setText(m.nombresSudoku[i]);
             // pour TextField
             t.setPrefWidth(50);
             
@@ -140,8 +140,7 @@ public class VueSudoku extends Application implements Observer{
         
         border.setCenter(gPane);
  
-        Scene scene = new Scene(border , Color.WHITE);
-        
+        Scene scene = new Scene(border , Color.WHITE);       
         
                 
         // ****************   évènements sur les boutons 
@@ -151,11 +150,31 @@ public class VueSudoku extends Application implements Observer{
                 System.out.println("Accepted");
                 File test = ouvrirFichier(scene);
                 try {
-                    //VueSudoku.nomFichier = test.getAbsolutePath();
                     // création d'un nouveau jeu
-                    Jeu sudo = new Jeu();
-                    sudo.init(test.getAbsolutePath());
-                    System.out.println("OUIIIIIIIIIIIIIIIII");
+                    m = new Jeu();
+                    m.init(test.getAbsolutePath());
+                    
+                    for(int y=0; y<9; y++)
+                    {
+                            for(int x=0; x<9; x++)
+                            {
+                                    if( m.tabLigne[y].getCaseValeur(x) != 0)
+                                    {
+                                        String sVal = Integer.toString( m.tabLigne[y].getCaseValeur(x));
+                                        ((TextField)this.getElementGrid(gPane, y, x)).setDisable(false);
+                                        ((TextField)this.getElementGrid(gPane, y, x)).clear();
+                                        ((TextField)this.getElementGrid(gPane, y, x)).setDisable(true);
+                                        ((TextField)this.getElementGrid(gPane, y, x)).setText(sVal);
+                                    }
+                                    else
+                                    {
+                                        ((TextField)this.getElementGrid(gPane, y, x)).setDisable(false);
+
+                                        ((TextField)this.getElementGrid(gPane, y, x)).clear();
+                                        ((TextField)this.getElementGrid(gPane, y, x)).setText("");
+                                    }
+                            }
+                    }
                 } catch (IOException ex) {
                     Logger.getLogger(VueSudoku.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -164,6 +183,15 @@ public class VueSudoku extends Application implements Observer{
             buttonResoudre.setOnAction((ActionEvent e) -> {
                 System.out.println("Résoudre le Sudoku");
                 m.solve(0, 0);
+                
+                for(int y=0; y<9; y++)
+                {
+                    for(int x=0; x<9; x++)
+                    {
+                        String sVal = Integer.toString( m.tabLigne[y].getCaseValeur(x));
+                        ((TextField)this.getElementGrid(gPane, y, x)).setText(sVal);
+                    }
+                }
             });
 
             buttonSauvegarder.setOnAction((ActionEvent e) -> {
@@ -180,30 +208,27 @@ public class VueSudoku extends Application implements Observer{
     }
     
     public static void main(String[] args) throws IOException {
-        /*Jeu sudoku;
-        sudoku = new Jeu();
-        sudoku.init(VueSudoku.nomFichier);*/
-        nomFichier = "test3.txt";
+        nomFichier = "test2.txt";
         launch(args);
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("     On est dans VueSudoku.update()       ");
-        /*try {
-            System.out.println("on relance init pour actualiser la vue ");
-            Jeu sudo = new Jeu();
-            sudo.init(VueSudoku.nomFichier);
-        } catch (IOException ex) {
-            Logger.getLogger(VueSudoku.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-        final Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        VBox dialogVbox = new VBox(20);
-        dialogVbox.getChildren().add(new Text("This is a Dialog"));
-        Scene dialogScene = new Scene(dialogVbox, 300, 200);
-        dialog.setScene(dialogScene);
-        dialog.show();
+        String sVal;
+        for(int y=0; y<9; y++)
+        {
+            for(int x=0; x<9; x++)
+            {
+                sVal = Integer.toString( m.tabLigne[y].getCaseValeur(x));
+                if("0".equals(sVal) )
+                {}
+                else
+                {
+                    //((TextField)this.getElementGrid(gPane, y, x)).setText(sVal);
+    
+                }
+           }
+        }
     }
     
     public File ouvrirFichier(Scene scene)
@@ -222,5 +247,17 @@ public class VueSudoku extends Application implements Observer{
     public static void setNomFichier(String nom)
     {
         VueSudoku.nomFichier = nom;
+    }
+    
+     public Node getElementGrid(GridPane g, int l, int c)
+    {
+        for(Node n : g.getChildren())
+        {
+            if(GridPane.getColumnIndex(n) == c && GridPane.getRowIndex(n) == l)
+            {
+                return n ; //trouvé
+            }
+        }
+        return null;
     }
 }
