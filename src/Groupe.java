@@ -35,13 +35,6 @@ public class Groupe {
     public boolean estEnConflit(Case c)
     {
         Case[] cTab = this.tab;
-        //System.out.println("valeur de c = " + c.getValeur());
-        /*System.out.print("Tableau de valeurs du groupe ");
-        for(int i = 0 ; i < cTab.length ; i++)       
-        {
-                System.out.print(cTab[i].getValeur() + " ");
-        }
-        System.out.println("");*/
         
         for(int i = 0 ; i < cTab.length ; i++)       
         {

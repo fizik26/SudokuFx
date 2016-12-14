@@ -34,24 +34,6 @@ public class Case {
         return (this.tabGroupe[0].estEnConflit(this)) && (this.tabGroupe[1].estEnConflit(this)) && (this.tabGroupe[2].estEnConflit(this));
     }
     
-    /*public Case(int _valeur , Groupe tab, boolean conflit)
-    {
-        this.valeur = _valeur;
-        this.tab = tab;
-        this.conflit = false;
-    }*/
-    
-    /*public void maj(int val)
-    {
-        this.conflit = false;
-
-        for (int i = 0; i < tab.length; ++i) {
-            if (tab[i].estEnConflit(this)){
-                conflit = true;
-            }
-        }
-    }*/
-    
     // récupération du groupe de la case
     public Groupe[] getGroupe()
     {
