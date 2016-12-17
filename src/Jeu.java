@@ -99,12 +99,14 @@ public class Jeu extends Observable{
         
 }
   
-    public void maj(int row, int column, char numero, String contenuFichier) throws IOException 
+    public void maj(int row, int column, char numero) throws IOException 
     {
         if(column == 0)
             column = 9;
         
     // **************************************************** modification fichier lorsque l'utilisateur rentre un chiffre    
+        // il faut passé le contenu du fichier dans la fonction pour réalisé cela
+
         // on trouve le bon caractère à changer puisque les espaces et les sauts de lignes comptent comme des caractères
         /*int numeroCaracAChanger = (row)*19+(column-1)*2;
         
@@ -141,7 +143,7 @@ public class Jeu extends Observable{
         if( ! tabLigne[row].estEnConflit(c) && ! tabCol[column-1].estEnConflit(c) && ! tabRegion[row/3][(column-1)/3].estEnConflit(c))
             System.out.println("On modifie bien sans conflit");
         else
-        {}
+        {System.out.println("Erreur, conflit !");}
         
       setChanged();
       notifyObservers();

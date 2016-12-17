@@ -119,10 +119,10 @@ public class VueSudoku extends Application implements Observer{
                 {
                     try {
                         // renvoie à la mise à jour du modèle le numéro de la ligne et le numéro de la colonne
-                        File file = new File("test.txt");
+                        //File file = new File("test.txt");
                         // on place le contenu du fichier texte dans contenuFichier
-                        String contenuFichier = m.loadFile(file);
-                        m.maj(r, c, ke.getCharacter().charAt(0) , contenuFichier);
+                        //String contenuFichier = m.loadFile(file);
+                        m.maj(r, c, ke.getCharacter().charAt(0));
                     } catch (IOException ex) {
                         Logger.getLogger(VueSudoku.class.getName()).log(Level.SEVERE, null, ex);
                     }
