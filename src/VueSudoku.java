@@ -35,7 +35,7 @@ public class VueSudoku extends Application implements Observer{
     //public static String[] nombresSudoku;
     public static String nomFichier;
     // affiche la saisie et le résultat
-    Text affichage;
+    //Text affichage;
         
     private GridPane gPane;
 

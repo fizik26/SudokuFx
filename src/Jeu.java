@@ -23,8 +23,6 @@ public class Jeu extends Observable{
     public Groupe tabCol[];
     public Groupe tabRegion[][];
     public String[] nombresSudoku;
-    
-    public Case grilleCase9x9[][];
 
     boolean err;
     double lastValue;
@@ -54,9 +52,8 @@ public class Jeu extends Observable{
 	{
             tabCol[i] = new Groupe();
         }
-        
-        grilleCase9x9 = new Case[9][9];
     }
+    
     
     public void init(String data) throws IOException
     {
